@@ -1,179 +1,231 @@
-import { useState } from "react";
-import { Sparkles } from "lucide-react";
-import img from "../assets/images/vfs-hero-section/vfs3.jpg";
+import { ArrowDown, Camera, Images, Sparkles } from "lucide-react";
+import { motion as Motion, useReducedMotion } from "framer-motion";
+
+const galleryImages = Object.entries(
+  import.meta.glob(
+    "../assets/school_gallery/*.{jpg,jpeg,png,webp,avif,gif}",
+    { eager: true, import: "default" }
+  )
+)
+  .sort(([firstPath], [secondPath]) =>
+    firstPath.localeCompare(secondPath, undefined, { numeric: true, sensitivity: "base" })
+  )
+  .map(([, src], index) => ({
+    src,
+    alt: `School gallery photo ${index + 1}`,
+  }));
 
 export default function GalleryPage() {
-  const [activeTab, setActiveTab] = useState("all");
-
-  const categories = ["all", "school", "events", "sports", "karate"];
-
-  const images = [
-    { src: img, category: "school" },
-    { src: img, category: "events" },
-    { src: img, category: "sports" },
-    { src: img, category: "karate" },
-    { src: img, category: "events" },
-    { src: img, category: "school" },
-    { src: img, category: "sports" },
-    { src: img, category: "karate" },
-    { src: img, category: "events" },
-    { src: img, category: "school" },
-  ];
-
-  const filtered =
-    activeTab === "all"
-      ? images
-      : images.filter((img) => img.category === activeTab);
-
-  const categoryCounts = categories.reduce((acc, cat) => {
-    acc[cat] = cat === "all" ? images.length : images.filter((img) => img.category === cat).length;
-    return acc;
-  }, {});
+  const reduceMotion = useReducedMotion();
 
   return (
-    <div className="min-h-screen bg-[#F4F8FB]">
-      {/* HERO */}
-      <section className="relative overflow-hidden bg-[#071A33] text-white">
-        <div className="pointer-events-none absolute inset-0">
-          <div className="absolute left-[-6rem] top-[-5rem] h-72 w-72 rounded-full bg-sky-400/20 blur-3xl" />
-          <div className="absolute right-[-4rem] top-10 h-80 w-80 rounded-full bg-cyan-300/20 blur-3xl" />
-          <div className="absolute inset-x-0 bottom-0 h-28 bg-gradient-to-b from-transparent to-[#0A2342]" />
+    <main className="min-h-screen overflow-hidden bg-[#F4F8FB]">
+      <section className="relative isolate overflow-hidden bg-[#071A33] text-white">
+        <div aria-hidden="true" className="pointer-events-none absolute inset-0">
+          <div className="absolute -left-40 -top-40 h-[28rem] w-[28rem] rounded-full bg-sky-400/20 blur-[100px]" />
+          <div className="absolute -right-32 top-12 h-[30rem] w-[30rem] rounded-full bg-cyan-300/15 blur-[110px]" />
+          <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-[#071A33] to-transparent" />
+          <div className="absolute inset-0 opacity-[0.07] [background-image:radial-gradient(#fff_1px,transparent_1px)] [background-size:24px_24px]" />
         </div>
 
-        <div className="relative mx-auto max-w-[1180px] px-4 py-16 pt-20 md:px-6 md:py-20 md:pt-28">
-          <div className="max-w-3xl">
-            <div className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/8 px-4 py-2 text-xs font-semibold uppercase tracking-[0.22em] text-white/80">
-              <Sparkles size={14} />
-              Campus stories
+        <div className="relative mx-auto grid min-h-[650px] max-w-[1280px] items-center gap-12 px-5 pb-20 pt-24 sm:px-8 md:pt-28 lg:grid-cols-[0.95fr_1.05fr] lg:gap-8 lg:px-12 lg:pb-24">
+          <Motion.div
+            initial={reduceMotion ? false : { opacity: 0, y: 24 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: reduceMotion ? 0 : 0.7, ease: "easeOut" }}
+            className="relative z-10 max-w-2xl"
+          >
+            <div className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/[0.08] px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.2em] text-sky-100 shadow-lg shadow-black/10 backdrop-blur-md">
+              <Sparkles size={14} className="text-cyan-200" />
+              A window into our world
             </div>
 
-            <h1 className="mt-5 text-4xl font-semibold tracking-tight md:text-6xl">
-              School Gallery
+            <h1 className="mt-7 text-5xl font-semibold leading-[1.05] tracking-[-0.045em] sm:text-6xl lg:text-7xl">
+              Little moments.
+              <span className="mt-2 block bg-gradient-to-r from-sky-200 via-cyan-200 to-teal-200 bg-clip-text text-transparent">
+                Lasting memories.
+              </span>
             </h1>
 
-            <p className="mt-5 max-w-2xl text-base leading-8 text-white/78 md:text-lg">
-              Moments of learning, growth, celebration, and achievement captured across classrooms,
-              events, sports, and karate.
+            <p className="mt-6 max-w-xl text-base leading-8 text-slate-300 sm:text-lg">
+              From classroom discoveries to celebrations and everyday friendships, explore the
+              moments that make our school special.
             </p>
+
+            <div className="mt-9 flex flex-wrap items-center gap-4">
+              <a
+                href="#gallery"
+                className="group inline-flex items-center gap-3 rounded-full bg-white px-6 py-3.5 text-sm font-semibold text-[#0A2342] shadow-[0_12px_35px_rgba(0,0,0,0.2)] transition hover:-translate-y-0.5 hover:bg-sky-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-cyan-200"
+              >
+                Explore the gallery
+                <ArrowDown
+                  size={16}
+                  className="transition-transform group-hover:translate-y-0.5"
+                />
+              </a>
+              <span className="inline-flex items-center gap-2 text-sm text-slate-300">
+                <Images size={17} className="text-cyan-200" />
+                {galleryImages.length} moments captured
+              </span>
+            </div>
+          </Motion.div>
+
+          <div className="relative mx-auto h-[360px] w-full max-w-[590px] sm:h-[440px] lg:h-[520px]">
+            <Motion.div
+              aria-hidden="true"
+              className="absolute left-[13%] top-[12%] h-[78%] w-[68%] rotate-[-7deg] rounded-[2rem] border border-white/15 bg-white/10 shadow-2xl shadow-black/20 backdrop-blur-sm"
+              initial={reduceMotion ? false : { opacity: 0, scale: 0.9, rotate: -13 }}
+              animate={{ opacity: 1, scale: 1, rotate: -7 }}
+              transition={{ duration: reduceMotion ? 0 : 0.8, delay: reduceMotion ? 0 : 0.15 }}
+            />
+
+            {galleryImages[0] && (
+              <Motion.div
+                className="absolute left-[17%] top-[7%] h-[82%] w-[68%] overflow-hidden rounded-[2rem] border border-white/20 bg-slate-800 shadow-[0_35px_90px_rgba(0,0,0,0.45)]"
+                initial={reduceMotion ? false : { opacity: 0, y: 24, rotate: 3 }}
+                animate={{ opacity: 1, y: 0, rotate: 2 }}
+                transition={{ duration: reduceMotion ? 0 : 0.8, delay: reduceMotion ? 0 : 0.25 }}
+              >
+                <img
+                  src={galleryImages[0].src}
+                  alt={galleryImages[0].alt}
+                  fetchPriority="high"
+                  className="h-full w-full object-cover"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#071A33]/75 via-transparent to-[#071A33]/10" />
+                <div className="absolute bottom-5 left-5 right-5 flex items-end justify-between">
+                  <div>
+                    <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-cyan-100/80">
+                      The VFS collection
+                    </p>
+                    <p className="mt-1 text-lg font-semibold text-white">Life, as we live it</p>
+                  </div>
+                  <span className="rounded-full border border-white/20 bg-white/10 p-2.5 text-white backdrop-blur-md">
+                    <Camera size={17} />
+                  </span>
+                </div>
+              </Motion.div>
+            )}
+
+            {galleryImages[1] && (
+              <Motion.div
+                className="absolute right-[1%] top-[2%] h-[34%] w-[34%] overflow-hidden rounded-[1.4rem] border-4 border-[#071A33] shadow-2xl shadow-black/30"
+                initial={reduceMotion ? false : { opacity: 0, x: 20, y: -8 }}
+                animate={{ opacity: 1, x: 0, y: 0 }}
+                transition={{ duration: reduceMotion ? 0 : 0.65, delay: reduceMotion ? 0 : 0.5 }}
+                whileHover={reduceMotion ? undefined : { y: -7, rotate: 2 }}
+              >
+                <img
+                  src={galleryImages[1].src}
+                  alt={galleryImages[1].alt}
+                  loading="lazy"
+                  className="h-full w-full object-cover"
+                />
+              </Motion.div>
+            )}
+
+            {galleryImages[2] && (
+              <Motion.div
+                className="absolute bottom-[2%] right-[4%] h-[31%] w-[31%] overflow-hidden rounded-[1.4rem] border-4 border-[#071A33] shadow-2xl shadow-black/30"
+                initial={reduceMotion ? false : { opacity: 0, x: 20, y: 8 }}
+                animate={{ opacity: 1, x: 0, y: 0 }}
+                transition={{ duration: reduceMotion ? 0 : 0.65, delay: reduceMotion ? 0 : 0.65 }}
+                whileHover={reduceMotion ? undefined : { y: -7, rotate: -2 }}
+              >
+                <img
+                  src={galleryImages[2].src}
+                  alt={galleryImages[2].alt}
+                  loading="lazy"
+                  className="h-full w-full object-cover"
+                />
+              </Motion.div>
+            )}
           </div>
         </div>
       </section>
 
-      {/* CATEGORY BAR */}
-      <section className="px-4 py-8 md:px-6 md:py-10">
-        <div className="mx-auto max-w-[1180px] rounded-[32px] border border-[#D7E2EE] bg-white p-4 shadow-[0_20px_50px_rgba(10,35,66,0.06)] md:p-6">
-          <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+      <section id="gallery" className="scroll-mt-24 px-5 py-16 sm:px-8 md:py-24 lg:px-12">
+        <div className="mx-auto max-w-[1280px]">
+          <Motion.div
+            className="mb-9 flex flex-col justify-between gap-5 sm:mb-12 sm:flex-row sm:items-end"
+            initial={reduceMotion ? false : { opacity: 0, y: 18 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.4 }}
+            transition={{ duration: reduceMotion ? 0 : 0.5 }}
+          >
             <div>
-              <p className="text-xs font-semibold uppercase tracking-[0.22em] text-[#5F718A]">
-                Browse gallery
+              <p className="text-xs font-bold uppercase tracking-[0.22em] text-[#137DC5]">
+                The moments that make us
               </p>
-              <p className="mt-2 text-sm text-[#0A2342]">
-                Filter by category to explore different parts of school life.
-              </p>
-            </div>
-
-            <div className="flex flex-wrap gap-3">
-              {categories.map((cat) => (
-                <button
-                  key={cat}
-                  onClick={() => setActiveTab(cat)}
-                  className={`inline-flex items-center gap-2 rounded-full px-4 py-2.5 text-sm font-semibold transition-all duration-200 ${
-                    activeTab === cat
-                      ? "bg-[#0A2342] text-white shadow-[0_12px_26px_rgba(10,35,66,0.18)]"
-                      : "border border-[#D7E2EE] bg-[#F8FBFF] text-[#0A2342] hover:bg-white"
-                  }`}
-                >
-                  <span className="text-[11px] font-bold uppercase tracking-[0.16em] opacity-70">
-                    {cat}
-                  </span>
-                  <span
-                    className={`rounded-full px-2 py-0.5 text-xs font-bold ${
-                      activeTab === cat
-                        ? "bg-white/10 text-white"
-                        : "bg-[#EEF4FB] text-[#5F718A]"
-                    }`}
-                  >
-                    {categoryCounts[cat]}
-                  </span>
-                </button>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* GRID */}
-      <section className="px-4 pb-16 md:px-6 md:pb-20">
-        <div className="mx-auto max-w-[1180px]">
-          <div className="mb-6 flex flex-wrap items-end justify-between gap-4">
-            <div>
-              <p className="text-xs font-semibold uppercase tracking-[0.22em] text-[#5F718A]">
-                Featured moments
-              </p>
-              <h2 className="mt-2 text-2xl font-semibold tracking-tight text-[#0A2342] md:text-3xl">
-                {activeTab === "all" ? "All gallery moments" : activeTab.toUpperCase()}
+              <h2 className="mt-3 text-3xl font-semibold tracking-[-0.035em] text-[#0A2342] sm:text-4xl">
+                Our school, in pictures
               </h2>
+              <p className="mt-3 max-w-xl text-sm leading-7 text-[#5F718A] sm:text-base">
+                A growing collection of the people, places, and moments we love.
+              </p>
             </div>
+            <span className="w-fit rounded-full border border-[#D7E2EE] bg-white px-4 py-2 text-sm font-medium text-[#425B76] shadow-sm">
+              {galleryImages.length} photos
+            </span>
+          </Motion.div>
 
-            <div className="rounded-full border border-[#D7E2EE] bg-white px-4 py-2 text-sm text-[#5F718A] shadow-[0_10px_26px_rgba(10,35,66,0.05)]">
-              {filtered.length} photos shown
-            </div>
-          </div>
-
-          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-            {filtered.map((item, index) => (
+          <div className="grid auto-rows-[150px] grid-flow-dense grid-cols-1 gap-4 sm:auto-rows-[170px] sm:grid-cols-2 sm:gap-5 lg:auto-rows-[185px] lg:grid-cols-3 xl:grid-cols-4">
+            {galleryImages.map((image, index) => (
               <GalleryCard
-                key={`${item.category}-${index}`}
-                item={item}
+                key={image.src}
+                image={image}
                 index={index}
+                reduceMotion={reduceMotion}
               />
             ))}
           </div>
         </div>
       </section>
-    </div>
+    </main>
   );
 }
 
-function GalleryCard({ item, index }) {
-  const isFeatured = index === 0 || index === 5;
-  const isTall = index % 5 === 0;
+function GalleryCard({ image, index, reduceMotion }) {
+  const layout = index % 10;
+  const sizeClass =
+    layout === 0
+      ? "row-span-2 sm:col-span-2"
+      : layout === 1 || layout === 7
+        ? "row-span-2"
+        : layout === 4
+          ? "sm:col-span-2"
+          : "";
+
   return (
-    <article
-      className={`group overflow-hidden rounded-[28px] border border-[#D7E2EE] bg-white shadow-[0_16px_40px_rgba(10,35,66,0.06)] transition-transform duration-200 hover:-translate-y-1 ${
-        isTall ? "sm:row-span-2" : ""
-      }`}
+    <Motion.article
+      className={`group relative min-h-0 overflow-hidden rounded-[1.6rem] bg-[#DCE7F1] shadow-[0_12px_35px_rgba(10,35,66,0.08)] ${sizeClass}`}
+      initial={reduceMotion ? false : { opacity: 0, y: 22, scale: 0.98 }}
+      whileInView={{ opacity: 1, y: 0, scale: 1 }}
+      viewport={{ once: true, amount: 0.12 }}
+      transition={{
+        duration: reduceMotion ? 0 : 0.5,
+        delay: reduceMotion ? 0 : (index % 8) * 0.045,
+        ease: "easeOut",
+      }}
+      whileHover={reduceMotion ? undefined : { y: -5 }}
     >
-      <div className="relative overflow-hidden">
-        <img
-          src={item.src}
-          alt="Gallery preview"
-          className={`w-full object-cover transition duration-500 group-hover:scale-105 ${
-            isTall ? "h-[340px] sm:h-[420px]" : "h-[220px]"
-          }`}
-        />
-
-        <div className="absolute inset-0 bg-gradient-to-t from-[#071A33]/45 via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
-
-        <div className="absolute left-4 top-4">
-          <span className="rounded-full bg-white/90 px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-[#0A2342] shadow-lg backdrop-blur">
-            {item.category}
-          </span>
-        </div>
-
-        {isFeatured && (
-          <div className="absolute bottom-4 left-4 right-4">
-            <div className="rounded-2xl bg-[#071A33]/85 px-4 py-3 text-white backdrop-blur">
-              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-white/60">
-                Featured capture
-              </p>
-              <p className="mt-1 text-sm font-medium">
-                A glimpse into {item.category} activities.
-              </p>
-            </div>
-          </div>
-        )}
+      <Motion.img
+        src={image.src}
+        alt={image.alt}
+        loading="lazy"
+        className={`h-full w-full object-cover transition duration-700 ${
+          reduceMotion ? "" : "group-hover:scale-105"
+        }`}
+      />
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#071A33]/65 via-[#071A33]/0 to-transparent opacity-70 transition-opacity duration-500 group-hover:opacity-100" />
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 flex translate-y-2 items-center justify-between p-4 opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100 sm:p-5">
+        <span className="text-[10px] font-semibold uppercase tracking-[0.2em] text-white/85">
+          VFS · MOMENT
+        </span>
+        <span className="text-xs font-medium tabular-nums text-white/75">
+          {String(index + 1).padStart(2, "0")}
+        </span>
       </div>
-    </article>
+    </Motion.article>
   );
 }

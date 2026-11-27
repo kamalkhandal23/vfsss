@@ -3,6 +3,7 @@ import avatar2 from "../../assets/icons/user2.png";
 import avatar3 from "../../assets/icons/user3.png";
 import { Star, ArrowLeft, ArrowRight } from "lucide-react";
 import { useState, useEffect } from "react";
+import { AnimatePresence, motion as Motion, useReducedMotion } from "framer-motion";
 
 const testimonials = [
   {
@@ -33,14 +34,24 @@ const testimonials = [
 
 export default function TestimonialSection() {
   const [currentIndex, setCurrentIndex] = useState(1);
+  const [slideDirection, setSlideDirection] = useState(1);
+  const reduceMotion = useReducedMotion();
 
   useEffect(() => {
+    if (reduceMotion) return undefined;
+
     const interval = setInterval(() => {
+      setSlideDirection(1);
       setCurrentIndex((prev) => (prev + 1) % testimonials.length);
     }, 3000);
 
     return () => clearInterval(interval);
-  }, []);
+  }, [reduceMotion]);
+
+  const moveCarousel = (direction) => {
+    setSlideDirection(direction);
+    setCurrentIndex((prev) => (prev + direction + testimonials.length) % testimonials.length);
+  };
 
   const getIndex = (offset) => {
     return (currentIndex + offset + testimonials.length) % testimonials.length;
@@ -55,16 +66,38 @@ export default function TestimonialSection() {
             What Parents & Students Say
           </h2>
 
-          <div className="mt-5 overflow-x-auto no-scrollbar">
-            <div className="flex gap-4">
-              {testimonials.map((item, i) => (
-                <TestimonialCard
-                  key={i}
-                  {...item}
-                  className="w-[280px] flex-shrink-0"
-                />
+          <div
+            className={`mt-5 ${
+              reduceMotion ? "overflow-x-auto no-scrollbar" : "overflow-hidden"
+            }`}
+            role="region"
+            aria-label="Parent and student testimonials"
+          >
+            <Motion.div
+              className="flex w-max"
+              animate={reduceMotion ? undefined : { x: ["0%", "-50%"] }}
+              transition={{
+                duration: 28,
+                ease: "linear",
+                repeat: Infinity,
+              }}
+            >
+              {[0, 1].map((setIndex) => (
+                <div
+                  key={setIndex}
+                  className="flex shrink-0 gap-4 pr-4"
+                  aria-hidden={setIndex === 1}
+                >
+                  {testimonials.map((item, i) => (
+                    <TestimonialCard
+                      key={`${setIndex}-${i}`}
+                      {...item}
+                      className="w-[280px] flex-shrink-0"
+                    />
+                  ))}
+                </div>
               ))}
-            </div>
+            </Motion.div>
           </div>
         </div>
       </section>
@@ -79,23 +112,42 @@ export default function TestimonialSection() {
           </h2>
 
           {/* CAROUSEL */}
-          <div className="flex items-center justify-center gap-6">
-
-            <TestimonialCard {...testimonials[getIndex(-1)]} faded />
-            <TestimonialCard {...testimonials[getIndex(0)]} active />
-            <TestimonialCard {...testimonials[getIndex(1)]} faded />
-
+          <div className="overflow-hidden">
+            <AnimatePresence initial={false} mode="wait" custom={slideDirection}>
+              <Motion.div
+                key={currentIndex}
+                custom={slideDirection}
+                variants={{
+                  enter: (direction) => ({
+                    opacity: 0,
+                    x: direction > 0 ? 56 : -56,
+                  }),
+                  center: { opacity: 1, x: 0 },
+                  exit: (direction) => ({
+                    opacity: 0,
+                    x: direction > 0 ? -56 : 56,
+                  }),
+                }}
+                initial={reduceMotion ? false : "enter"}
+                animate="center"
+                exit={reduceMotion ? undefined : "exit"}
+                transition={{ duration: reduceMotion ? 0 : 0.45, ease: "easeInOut" }}
+                className="flex items-center justify-center gap-6"
+              >
+                <TestimonialCard {...testimonials[getIndex(-1)]} faded />
+                <TestimonialCard {...testimonials[getIndex(0)]} active />
+                <TestimonialCard {...testimonials[getIndex(1)]} faded />
+              </Motion.div>
+            </AnimatePresence>
           </div>
 
           {/* CONTROLS */}
           <div className="flex items-center justify-between mt-10">
 
             <button
-              onClick={() =>
-                setCurrentIndex((prev) =>
-                  (prev - 1 + testimonials.length) % testimonials.length
-                )
-              }
+              type="button"
+              aria-label="Previous testimonial"
+              onClick={() => moveCarousel(-1)}
               className="h-10 w-10 flex items-center justify-center rounded-full border border-[#137DC5] text-white bg-[#0A2342]"
             >
               <ArrowLeft size={18} />
@@ -113,11 +165,9 @@ export default function TestimonialSection() {
             </div>
 
             <button
-              onClick={() =>
-                setCurrentIndex((prev) =>
-                  (prev + 1) % testimonials.length
-                )
-              }
+              type="button"
+              aria-label="Next testimonial"
+              onClick={() => moveCarousel(1)}
               className="h-10 w-10 flex items-center justify-center rounded-full bg-[#0A2342] text-white"
             >
               <ArrowRight size={18} />

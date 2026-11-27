@@ -18,8 +18,7 @@ import logo from "../../../assets/logo/vfs-logo.png";
 const FALLBACK_MENU = [
   { label: "HOME", path: "/" },
   { label: "ADMISSIONS", path: "/admissions" },
-  { label: "ACADEMICS", path: "/fleet" },
-  { label: "FAQ", path: "/faq" },
+  { label: "GALLERY", path: "/gallery" },
   { label: "CONTACT US", path: "/contact" },
   { label: "ABOUT US", path: "/about" },
 ];

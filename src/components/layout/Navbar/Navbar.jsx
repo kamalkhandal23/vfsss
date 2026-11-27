@@ -13,8 +13,7 @@ const DEFAULT_COPY = {
 const DEFAULT_NAV_LINKS = [
   { label: "HOME", path: "/", roleAccess: ["guest", "user", "admin"] },
   { label: "ADMISSIONS", path: "/admissions", roleAccess: ["guest", "user", "admin"] },
-  { label: "ACADEMICS", path: "/fleet", roleAccess: ["guest", "user", "admin"] },
-  { label: "FAQ", path: "/faq", roleAccess: ["guest", "user", "admin"] },
+  { label: "GALLERY", path: "/gallery", roleAccess: ["guest", "user", "admin"] },
   { label: "CONTACT US", path: "/contact", roleAccess: ["guest", "user", "admin"] },
   { label: "DASHBOARD", path: "/admin/dashboard", roleAccess: ["admin"] },
   { label: "ABOUT US", path: "/about", roleAccess: ["guest", "user", "admin"] },

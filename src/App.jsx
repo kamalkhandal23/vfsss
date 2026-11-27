@@ -4,7 +4,6 @@ import Navbar from "./components/layout/Navbar/Navbar";
 import Footer from "./components/layout/Footer";
 import Home from "./pages/Home";
 import About from "./pages/About";
-import Fleet from "./pages/Fleet";
 import Explore from "./pages/Explore";
 import FAQ from "./pages/Faq";
 import Contact from "./pages/Contact";
@@ -42,7 +41,6 @@ function AppContent() {
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/about" element={<About />} />
-            <Route path="/fleet" element={<Fleet />} />
             <Route path="/explore" element={<Explore />} />
             <Route path="/faq" element={<FAQ />} />
             <Route path="/terms" element={<TermsAndConditionsPage />} />

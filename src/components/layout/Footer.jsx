@@ -58,8 +58,8 @@ export default function Footer() {
                 Taekwondo & Karate Classes
               </Link>
 
-              <Link to="/gallery" className="block hover:text-[#00CFC8]">
-                Gallery
+              <Link to="/faq" className="block hover:text-[#00CFC8]">
+                FAQ
               </Link>
               <Link to="/neev" className="block hover:text-[#00CFC8]">NEEV Batch</Link>
               <Link to="/results" className="block hover:text-[#00CFC8]">Results</Link>
@@ -135,7 +135,7 @@ export default function Footer() {
             <Link to="/about" className="block">About</Link>
             <Link to="/admissions" className="block">Admissions</Link>
             <Link to="/neev" className="block">NEEV</Link>
-            <Link to="/gallery" className="block">Gallery</Link>
+            <Link to="/faq" className="block">FAQ</Link>
             <Link to="/results" className="block">Results</Link>
             <Link to="/karate" className="block">Karate Classes</Link>
           </div>
